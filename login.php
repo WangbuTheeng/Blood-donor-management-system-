@@ -29,7 +29,7 @@ echo "<script>alert('Invalid Details');</script>";
 <html lang="zxx">
 
 <head>
-	<title>Blood Bank Donar Management System | About Us </title>
+	<title>Blood Donor Management System | About Us </title>
 	<!-- Meta tag Keywords -->
 	
 	<script>

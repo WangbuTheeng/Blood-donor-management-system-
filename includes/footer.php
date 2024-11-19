@@ -5,7 +5,7 @@
           <div class="col-md-4 w3l-footer">
             <h2 class="mb-sm-3 mb-2">
               <a href="index.php" class="text-white font-italic font-weight-bold">
-                <span style="color:white">Blood Bank & </span>Donor Management System 
+                <span style="color:white">Blood </span>Donor Management System 
                 <i class="fas fa-syringe ml-2"></i>
               </a>
             </h2>
@@ -47,7 +47,7 @@
           </div>
         </div>
         <div class="border-top mt-5 pt-lg-4 pt-3 pb-lg-0 pb-3 text-center">
-          <p class="copy-right-grids mt-lg-1">©  Blood Bank Donor Management System
+          <p class="copy-right-grids mt-lg-1">©  Blood Donor Management System
            
           </p>
         </div>

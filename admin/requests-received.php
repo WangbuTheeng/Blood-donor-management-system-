@@ -2,14 +2,11 @@
 session_start();
 error_reporting(0);
 include('includes/config.php');
-if(strlen($_SESSION['alogin'])==0)
-	{	
-header('location:index.php');
-}
-else{
 
-
- ?>
+if(strlen($_SESSION['alogin'])==0) {	
+    header('location:index.php');
+} else {
+?>
 
 <!doctype html>
 <html lang="en" class="no-js">
@@ -22,7 +19,7 @@ else{
 	<meta name="author" content="">
 	<meta name="theme-color" content="#3e454c">
 	
-	<title>BBDMS | Donor List  </title>
+	<title>BBDMS | Donor List</title>
 
 	<!-- Font awesome -->
 	<link rel="stylesheet" href="css/font-awesome.min.css">
@@ -40,25 +37,23 @@ else{
 	<link rel="stylesheet" href="css/awesome-bootstrap-checkbox.css">
 	<!-- Admin Stye -->
 	<link rel="stylesheet" href="css/style.css">
-  <style>
-		.errorWrap {
-    padding: 10px;
-    margin: 0 0 20px 0;
-    background: #fff;
-    border-left: 4px solid #dd3d36;
-    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-}
-.succWrap{
-    padding: 10px;
-    margin: 0 0 20px 0;
-    background: #fff;
-    border-left: 4px solid #5cb85c;
-    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-}
-		</style>
 
+	<style>
+		.errorWrap {
+		    padding: 10px;
+		    margin: 0 0 20px 0;
+		    background: #fff;
+		    border-left: 4px solid #dd3d36;
+		    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+		}
+		.succWrap {
+		    padding: 10px;
+		    margin: 0 0 20px 0;
+		    background: #fff;
+		    border-left: 4px solid #5cb85c;
+		    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+		}
+	</style>
 </head>
 
 <body>
@@ -66,82 +61,105 @@ else{
 
 	<div class="ts-main-content">
 		<?php include('includes/leftbar.php');?>
+
 		<div class="content-wrapper">
 			<div class="container-fluid">
 
-	
-					<div class="col-md-12">
+				<div class="col-md-12">
+					<h3>Blood Requests Received</h3>
+					<hr />
 
-
-
-<h3> Blood Requests Received</h3>
-<hr />
-						<!-- Zero Configuration Table -->
-						<div class="panel panel-default">
-							<div class="panel-heading">Blood Info</div>
-							<div class="panel-body">
-							
-								<table border="1" class="table table-responsive">
-                                    <thead>
-                                         <tr>
-                                         	<th>S.No</th>
-                                          <th>Name of Donar</th>
-                                          <th>Conatact Number of Donar</th>
-                                            <th>Name of Requirer</th>
-                                            <th>Mobile Number of Requirer</th>
-                                            <th>Email of Requirer</th>
-                                            <th>Blood Require For</th>
-                                            <th>Message of Requirer</th>
-                                            <th>Apply Date</th>
-                                        </tr>
-                                    </thead>
-                                   
-                                    <tbody>
-                                       
-                                        <tr><?php
-                                          
-$sql="SELECT tblbloodrequirer.BloodDonarID,tblbloodrequirer.name,tblbloodrequirer.EmailId,tblbloodrequirer.ContactNumber,tblbloodrequirer.BloodRequirefor,tblbloodrequirer.Message,tblbloodrequirer.ApplyDate,tblblooddonars.id as donid,tblblooddonars.FullName,tblblooddonars.MobileNumber from  tblbloodrequirer join tblblooddonars on tblblooddonars.id=tblbloodrequirer.BloodDonarID where tblblooddonars.FullName like '%$sdata%' || tblblooddonars.MobileNumber like '%$sdata%'";
-$query = $dbh -> prepare($sql);
-$query->bindParam(':uid',$uid,PDO::PARAM_STR);
-$query->execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
-$cnt=1;
-if($query->rowCount() > 0)
-{
-foreach($results as $row)
-{               ?>
-                                            <td><?php echo htmlentities($cnt);?></td>
-                                            <td><?php  echo htmlentities($row->FullName);?></td>
-                                            <td><?php  echo htmlentities($row->MobileNumber);?></td>
-                                        <td><?php  echo htmlentities($row->name);?></td>
-                                             <td><?php  echo htmlentities($row->ContactNumber);?></td>
-                                             <td><?php  echo htmlentities($row->EmailId);?></td>
-                                          <td><?php  echo htmlentities($row->BloodRequirefor);?></td>
-                                          
-                     
-                 <td><?php  echo htmlentities($row->Message);?> 
-                  </td>
-                               
-                                            <td>
-                                              <?php  echo htmlentities($row->ApplyDate);?>  
-                                            </td>
-                                        </tr>
-                                    <?php $cnt=$cnt+1;}}?>
-                            
-                             
-                                    </tbody>
-                                </table>
-
-						
-
+					<!-- Search Form -->
+					<div class="panel-body">
+						<form method="post" name="search" class="form-horizontal">
+							<div class="form-group">
+								<label class="col-sm-4 control-label">Search by Donor Name, Donor Contact, Requirer Name, Requirer Mobile, Requirer Email</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" name="searchdata" id="searchdata" required>
+								</div>
 							</div>
-						</div>
-
-					
-
+							<div class="form-group">
+								<div class="col-sm-8 col-sm-offset-4">
+									<button class="btn btn-primary" name="search" type="submit">Search</button>
+								</div>
+							</div>
+						</form>
 					</div>
-				</div>
 
+					<!-- Table to Display Data -->
+					<div class="panel panel-default">
+						<div class="panel-heading">Blood Info</div>
+						<div class="panel-body">
+							<table border="1" class="table table-responsive">
+								<thead>
+									<tr>
+										<th>S.No</th>
+										<th>Name of Donor</th>
+										<th>Contact Number of Donor</th>
+										<th>Name of Requirer</th>
+										<th>Mobile Number of Requirer</th>
+										<th>Email of Requirer</th>
+										<th>Blood Required For</th>
+										<th>Message of Requirer</th>
+										<th>Apply Date</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php
+									if(isset($_POST['search'])) {
+										$sdata = $_POST['searchdata'];
+
+										// Modify SQL to include conditions for all fields
+										$sql = "SELECT tblbloodrequirer.BloodDonarID, tblbloodrequirer.name, tblbloodrequirer.EmailId, tblbloodrequirer.ContactNumber, tblbloodrequirer.BloodRequirefor, tblbloodrequirer.Message, tblbloodrequirer.ApplyDate, tblblooddonars.id as donid, tblblooddonars.FullName, tblblooddonars.MobileNumber 
+												FROM tblbloodrequirer 
+												JOIN tblblooddonars ON tblblooddonars.id = tblbloodrequirer.BloodDonarID
+												WHERE tblblooddonars.FullName LIKE :searchdata
+												OR tblblooddonars.MobileNumber LIKE :searchdata
+												OR tblbloodrequirer.name LIKE :searchdata
+												OR tblbloodrequirer.ContactNumber LIKE :searchdata
+												OR tblbloodrequirer.EmailId LIKE :searchdata
+												OR tblbloodrequirer.BloodRequirefor LIKE :searchdata
+												OR tblbloodrequirer.Message LIKE :searchdata";
+
+										$query = $dbh->prepare($sql);
+										$searchdata = "%".$sdata."%";  // Prepare for search pattern
+										$query->bindParam(':searchdata', $searchdata, PDO::PARAM_STR);
+										$query->execute();
+										$results = $query->fetchAll(PDO::FETCH_OBJ);
+										$cnt = 1;
+
+										if($query->rowCount() > 0) {
+											foreach($results as $row) {
+									?>
+									<tr>
+										<td><?php echo htmlentities($cnt); ?></td>
+										<td><?php echo htmlentities($row->FullName); ?></td>
+										<td><?php echo htmlentities($row->MobileNumber); ?></td>
+										<td><?php echo htmlentities($row->name); ?></td>
+										<td><?php echo htmlentities($row->ContactNumber); ?></td>
+										<td><?php echo htmlentities($row->EmailId); ?></td>
+										<td><?php echo htmlentities($row->BloodRequirefor); ?></td>
+										<td><?php echo htmlentities($row->Message); ?></td>
+										<td><?php echo htmlentities($row->ApplyDate); ?></td>
+									</tr>
+									<?php
+												$cnt++;
+											}
+										} else {
+									?>
+										<tr>
+											<td colspan="9" style="color:red;">No records found</td>
+										</tr>
+									<?php
+										}
+									}
+									?>
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+				</div>
 			</div>
 		</div>
 	</div>
@@ -158,4 +176,5 @@ foreach($results as $row)
 	<script src="js/main.js"></script>
 </body>
 </html>
+
 <?php } ?>

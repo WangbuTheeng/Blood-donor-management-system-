@@ -39,7 +39,7 @@ echo '<script>alert("Your current password is wrong")</script>';
 <html lang="zxx">
 
 <head>
-	<title>Blood Bank Donar Management System !! Change Password</title>
+	<title>Blood Donar Management System !! Change Password</title>
 	
 	<script>
 		addEventListener("load", function () {

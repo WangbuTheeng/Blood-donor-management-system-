@@ -3,7 +3,7 @@
 define('DB_HOST','localhost');
 define('DB_USER','root');
 define('DB_PASS','');
-define('DB_NAME','bbdms');
+define('DB_NAME','blood_donor_ms');
 // Establish database connection.
 try
 {

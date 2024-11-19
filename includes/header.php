@@ -9,28 +9,7 @@
                     <div class="col-lg-7 top-social-agile">
                         <div class="row">
                             <!-- social icons -->
-                            <ul class="col-lg-4 col-6 top-right-info text-center">
-                                <li>
-                                    <a href="#">
-                                        <i class="fab fa-facebook-f"></i>
-                                    </a>
-                                </li>
-                                <li class="mx-3">
-                                    <a href="#">
-                                        <i class="fab fa-twitter"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <i class="fab fa-google-plus-g"></i>
-                                    </a>
-                                </li>
-                                <li class="ml-3">
-                                    <a href="#">
-                                        <i class="fab fa-pinterest-p"></i>
-                                    </a>
-                                </li>
-                            </ul><?php 
+                           <?php 
 $pagetype="contactus";
 $sql = "SELECT * from tblcontactusinfo";
 $query = $dbh -> prepare($sql);
@@ -49,17 +28,7 @@ foreach($results as $result)
                         </div>
                     </div>
                     <div class="col-lg-5 top-social-agile text-lg-right text-center" >
-                        <div class="row" style="color: red !important">
-                            <div class="col-lg-7 col-6 top-w3layouts">
-                                <p class="text-white">
-                                    <i class="far fa-envelope-open mr-2"></i>
-                                    <a href="mailto:info@example.com" class="text-white" style="color:#db1212 !important">
-                                </p>
-                            </div>
-                            <div class="col-lg-5 col-6 header-w3layouts pl-4 text-lg-left">
-                                <p class="text-white" style="color:#db1212 !important">
-                                    <i class="fas fa-phone mr-2"></i>03033173484</p>
-                            </div>
+                       
                         </div><?php } } ?>
                     </div>
                 </div>
@@ -77,8 +46,8 @@ foreach($results as $result)
                     <!-- logo -->
                     <h1>
                         <a class="navbar-brand font-weight-bold font-italic" href="index.php">
-                            <span>BB</span>DMS
-                            <i class="fas fa-syringe"></i>
+                            <span>B</span>DMS
+                            
                         </a>
                     </h1>
                     <!-- //logo -->
@@ -105,7 +74,7 @@ foreach($results as $result)
                             <li class="nav-item mx-lg-4 my-lg-0 my-3">
                                 <a class="nav-link" href="search-donor.php">Search Donor</a>
                             </li>
-                            <?php if (strlen($_SESSION['bbdmsdid']!=0)) {?>
+                            <?php if (isset($_SESSION['bbdmsdid'])) {?>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                                     aria-haspopup="true" aria-expanded="false">
@@ -123,7 +92,7 @@ foreach($results as $result)
                                 </div>
                             </li>
                             <?php } ?>
-                            <?php if (strlen($_SESSION['bbdmsdid']==0)) {?>
+                            <?php if (!isset($_SESSION['bbdmsdid'])) {?>
                             <li class="nav-item mx-lg-4 my-lg-0 my-3">
                                 <a class="nav-link" href="admin/index.php">Admin</a>
                             </li>

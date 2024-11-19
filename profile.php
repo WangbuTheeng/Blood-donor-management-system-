@@ -37,7 +37,7 @@ if (strlen($_SESSION['bbdmsdid']==0)) {
 <html lang="zxx">
 
 <head>
-	<title>Blood Bank Donar Management System !! Donor Profile</title>
+	<title>Blood Donar Management System !! Donor Profile</title>
 	
 	<script>
 		addEventListener("load", function () {

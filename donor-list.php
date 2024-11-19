@@ -1,206 +1,148 @@
 <?php
+// Suppress warnings
 error_reporting(0);
+
+// Include database configuration
 include('includes/config.php');
+
+// Handle donor registration
+if (isset($_POST['submit'])) {
+    $fullname = $_POST['fullname'];
+    $mobile = $_POST['mobileno'];
+    $email = $_POST['emailid'];
+    $age = $_POST['age'];
+    $gender = $_POST['gender'];
+    $bloodgroup = $_POST['bloodgroup'];
+    $address = $_POST['address'];
+    $message = $_POST['message'];
+    $weight = $_POST['weight'];
+    $status = 0; // Set status to 0 for pending approval
+    $password = md5($_POST['password']);
+    $diseases = $_POST['diseases'];
+
+    // Fetch all donor records for linear search
+    $sql = "SELECT EmailId FROM tblblooddonars";
+    $query = $dbh->prepare($sql);
+    $query->execute();
+    $allDonors = $query->fetchAll(PDO::FETCH_ASSOC);
+
+    // Perform a linear search for the email
+    $emailExists = false;
+    foreach ($allDonors as $donor) {
+        if ($donor['EmailId'] === $email) {
+            $emailExists = true;
+            break;
+        }
+    }
+
+    // Validation and insertion
+    if (!$emailExists && $age >= 18 && $weight >= 50) {
+        $sql = "INSERT INTO tblblooddonars (FullName, MobileNumber, EmailId, Age, Gender, BloodGroup, Address, Message, status, Password, Diseases, Weight)
+                VALUES (:fullname, :mobile, :email, :age, :gender, :bloodgroup, :address, :message, :status, :password, :diseases, :weight)";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':fullname', $fullname, PDO::PARAM_STR);
+        $query->bindParam(':mobile', $mobile, PDO::PARAM_STR);
+        $query->bindParam(':email', $email, PDO::PARAM_STR);
+        $query->bindParam(':age', $age, PDO::PARAM_STR);
+        $query->bindParam(':gender', $gender, PDO::PARAM_STR);
+        $query->bindParam(':bloodgroup', $bloodgroup, PDO::PARAM_STR);
+        $query->bindParam(':address', $address, PDO::PARAM_STR);
+        $query->bindParam(':message', $message, PDO::PARAM_STR);
+        $query->bindParam(':status', $status, PDO::PARAM_STR);
+        $query->bindParam(':password', $password, PDO::PARAM_STR);
+        $query->bindParam(':diseases', $diseases, PDO::PARAM_STR);
+        $query->bindParam(':weight', $weight, PDO::PARAM_STR);
+        $query->execute();
+
+        $lastInsertId = $dbh->lastInsertId();
+
+        if ($lastInsertId) {
+            echo "<script>alert('Your registration is successful. It is now pending admin approval.');</script>";
+        } else {
+            echo "<script>alert('Something went wrong. Please try again.');</script>";
+        }
+    } else {
+        if ($emailExists) {
+            echo "<script>alert('Email-ID already exists. Please try again.');</script>";
+        } elseif ($age < 18) {
+            echo "<script>alert('Age must be at least 18 years.');</script>";
+        } elseif ($weight < 50) {
+            echo "<script>alert('Minimum weight must be 50 kg.');</script>";
+        }
+    }
+}
+
+// Fetch only approved donors
+$approved = 1;
+$sql = "SELECT * FROM tblblooddonars WHERE approved=:approved";
+$query = $dbh->prepare($sql);
+$query->bindParam(':approved', $approved, PDO::PARAM_INT);
+$query->execute();
+$results = $query->fetchAll(PDO::FETCH_OBJ);
 ?>
 
 <!DOCTYPE html>
-<html lang="zxx">
-
+<html lang="en">
 <head>
-	<title>Blood Bank Donar Management System | Blood Donor List </title>
-	<!-- Meta tag Keywords -->
-	
-	<script>
-		addEventListener("load", function () {
-			setTimeout(hideURLbar, 0);
-		}, false);
-
-		function hideURLbar() {
-			window.scrollTo(0, 1);
-		}
-	</script>
-	<!--// Meta tag Keywords -->
-
-	<!-- Custom-Files -->
-	<link rel="stylesheet" href="css/bootstrap.css">
-	<!-- Bootstrap-Core-CSS -->
-	<link rel="stylesheet" href="css/style.css" type="text/css" media="all" />
-	<!-- Style-CSS -->
-	<link rel="stylesheet" href="css/fontawesome-all.css">
-	<!-- Font-Awesome-Icons-CSS -->
-	<!-- //Custom-Files -->
-
-	<!-- Web-Fonts -->
-	<link href="//fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese"
-	    rel="stylesheet">
-	<link href="//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese"
-	    rel="stylesheet">
-	<!-- //Web-Fonts -->
-
+    <title>Blood Donor Management System | Approved Donor List</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="css/fontawesome-all.css">
 </head>
-
 <body>
-	<?php include('includes/header.php');?>
+    <!-- Include header -->
+    <?php include('includes/header.php'); ?>
 
-	<!-- banner 2 -->
-	<div class="inner-banner-w3ls">
-		<div class="container">
+    <!-- Page Banner -->
+    <div class="inner-banner-w3ls">
+        <div class="container">
+            <h2 class="text-center text-white">Approved Donors</h2>
+        </div>
+    </div>
 
-		</div>
-		<!-- //banner 2 -->
-	</div>
-	<!-- page details -->
-	<!-- <div class="breadcrumb-agile">
-		<div aria-label="breadcrumb">
-			<ol class="breadcrumb">
-				<li class="breadcrumb-item">
-					<a href="index.php">Home</a>
-				</li>
-				<li class="breadcrumb-item active" aria-current="page">Blood Donar List</li>
-			</ol>
-		</div>
-	</div> -->
-	<!-- //page details -->
+    <!-- Donor List -->
+    <div class="agileits-contact py-5">
+        <div class="container py-xl-5 py-lg-3">
+            <div class="w3ls-titles text-center mb-5">
+                <h3 class="title">Blood Donor List</h3>
+                <span><i class="fas fa-user-md"></i></span>
+            </div>
+            <div class="row">
+                <?php
+                if ($query->rowCount() > 0) {
+                    foreach ($results as $result) {
+                ?>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="images/blood-donor.jpg" alt="Blood Donor" class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title"><?php echo htmlentities($result->FullName); ?></h5>
+                            <p><strong>Gender:</strong> <?php echo htmlentities($result->Gender); ?></p>
+                            <p><strong>Blood Group:</strong> <?php echo htmlentities($result->BloodGroup); ?></p>
+                            <p><strong>Mobile:</strong> <?php echo htmlentities($result->MobileNumber); ?></p>
+                            <p><strong>Email:</strong> <?php echo htmlentities($result->EmailId); ?></p>
+                            <p><strong>Age:</strong> <?php echo htmlentities($result->Age); ?></p>
+                            <p><strong>Address:</strong> <?php echo htmlentities($result->Address); ?></p>
+                            <p><strong>Message:</strong> <?php echo htmlentities($result->Message); ?></p>
+                            <a href="contact-blood.php?cid=<?php echo $result->id; ?>" class="btn btn-primary">Request</a>
+                        </div>
+                    </div>
+                </div>
+                <?php 
+                    }
+                } else {
+                    echo "<p class='text-center'>No approved donors found.</p>";
+                }
+                ?>
+            </div>
+        </div>
+    </div>
 
-	<!-- contact -->
-	<div class="agileits-contact py-5">
-		<div class="py-xl-5 py-lg-3">
-			
-			<div class="w3ls-titles text-center mb-5">
-				<h3 class="title">Blood Donor List</h3>
-				<span>
-					<i class="fas fa-user-md"></i>
-				</span>
-			</div>
-			<div class="d-flex">
-				
-				<div class="row package-grids mt-5" style="padding-left: 50px;">
-				<?php
-				
-$status=1;
- 
+    <!-- Include footer -->
+    <?php include('includes/footer.php'); ?>
 
-$sql = "SELECT * from tblblooddonars where status=:status";
-$query = $dbh -> prepare($sql);
-$query->bindParam(':status',$status,PDO::PARAM_STR);
-$query->execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
-$cnt=1;
-if($query->rowCount() > 0)
-{
-foreach($results as $result)
-{ ?>
-				<div class="col-md-4 pricing">
-					
-					<div class="price-top">
-					
-							<img src="images/blood-donor.jpg" alt="Blood Donot" style="border:1px #000 solid" class="img-fluid" />
-				
-						<h3><?php echo htmlentities($result->FullName);?>
-						</h3>
-					</div>
-					<div class="price-bottom p-4">
-
-
-<table class="table table-bordered">
-
-    <tbody>
-      <tr>
-        <th>Gender</th>
-        <td><?php echo htmlentities($result->Gender);?></td>
-      </tr>
-      <tr>
-        <td>Blood Group</td>
-        <td><?php echo htmlentities($result->BloodGroup);?></td>
-      </tr>
-      <tr>
-        <td>Mobile No.</td>
-        <td><?php echo htmlentities($result->MobileNumber);?></td>
-      </tr>
-
-         <tr>
-        <td>Email ID</td>
-        <td><?php echo htmlentities($result->EmailId);?></td>
-      </tr>
-
-               <tr>
-        <td>Age</td>
-        <td><?php echo htmlentities($result->Age);?></td>
-      </tr>
-
-        <tr>
-        <td>Address</td>
-        <td><?php echo htmlentities($result->Address);?></td>
-      </tr>
-
-<tr>
-        <td>Message</td>
-        <td><?php echo htmlentities($result->Message);?></td>
-      </tr>
-
-    </tbody>
-</table>
-<a class="btn btn-primary" style="color:#fff"  href="contact-blood.php?cid=<?php echo $result->id;?>">Request</a>
-					</div>
-				</div><br>
-			<?php }} ?>
-			
-			
-			</div>
-			</div>
-		</div>
-	</div>
-	<!-- //contact -->
-
-	
-
-
-	<?php include('includes/footer.php');?>
-
-	<!-- Js files -->
-	<!-- JavaScript -->
-	<script src="js/jquery-2.2.3.min.js"></script>
-	<!-- Default-JavaScript-File -->
-
-	<!-- banner slider -->
-	<script src="js/responsiveslides.min.js"></script>
-	<script>
-		$(function () {
-			$("#slider4").responsiveSlides({
-				auto: true,
-				pager: true,
-				nav: true,
-				speed: 1000,
-				namespace: "callbacks",
-				before: function () {
-					$('.events').append("<li>before event fired.</li>");
-				},
-				after: function () {
-					$('.events').append("<li>after event fired.</li>");
-				}
-			});
-		});
-	</script>
-	<!-- //banner slider -->
-
-	<!-- fixed navigation -->
-	<script src="js/fixed-nav.js"></script>
-	<!-- //fixed navigation -->
-
-	<!-- smooth scrolling -->
-	<script src="js/SmoothScroll.min.js"></script>
-	<!-- move-top -->
-	<script src="js/move-top.js"></script>
-	<!-- easing -->
-	<script src="js/easing.js"></script>
-	<!--  necessary snippets for few javascript files -->
-	<script src="js/medic.js"></script>
-
-	<script src="js/bootstrap.js"></script>
-	<!-- Necessary-JavaScript-File-For-Bootstrap -->
-
-	<!-- //Js files -->
-
+    <!-- JS Scripts -->
+    <script src="js/jquery-2.2.3.min.js"></script>
+    <script src="js/bootstrap.js"></script>
 </body>
-
 </html>
