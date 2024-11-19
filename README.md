@@ -17,7 +17,7 @@
 	<li>MySQL 5.7 or higher</li>
 </ul>
 
-<h2>Installation</h2>
+
 
 
 </html>
